@@ -17,7 +17,7 @@ jobs:
 
       # Publish ExchangeRateTransfer
       - name: publish ExchangeRateTransfer
-        id: Publish-Nuget-ExchangeRateTransfer
+        id: Publish_Nuget_ExchangeRateTransfer
         uses: Rebel028/publish-nuget@v2.8.0
         with:
           # Filepath of the project to be packaged, relative to root of repository
@@ -35,7 +35,7 @@ jobs:
 
       # Publish ExchangeRateTransfer.DotNet
       - name: publish ExchangeRateTransfer.DotNet
-        id: Publish-Nuget-ExchangeRateTransfer.DotNet
+        id: Publish_Nuget_ExchangeRateTransfer_DotNet
         uses: Rebel028/publish-nuget@v2.8.0
         with:
           PROJECT_FILE_PATH: ExchangeRateTransfer.DotNet/ExchangeRateTransfer.DotNet.csproj
@@ -46,7 +46,7 @@ jobs:
 
       # Publish ExchangeRateTransfer.Worker
       - name: publish ExchangeRateTransfer.Worker
-        id: Publish-Nuget-ExchangeRateTransfer.Worker
+        id: Publish_Nuget_ExchangeRateTransfer_Worker
         uses: Rebel028/publish-nuget@v2.8.0
         with:
           PROJECT_FILE_PATH: ExchangeRateTransfer.Worker/ExchangeRateTransfer.Worker.csproj
