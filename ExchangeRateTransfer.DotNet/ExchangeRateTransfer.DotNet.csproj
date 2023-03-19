@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>ExchangeRateTransfer.DotNet</PackageId>
+    <Title>ExchangeRateTransfer.DotNet</Title>
+    <Version>1.0.0</Version>
+    <Product>ExchangeRateTransfer.DotNet</Product>
+    <Company>Kursat Sonmez</Company>
+    <Authors>Kursat Sonmez</Authors>
+    <Copyright>Kursat Sonmez</Copyright>
+    <RepositoryUrl>https://github.com/KursatSonmez/ExchangeRateTransfer</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageIcon>lira.png</PackageIcon>
+    <Description>This package is used to collect foreign currency informations for Turkish currency from the CBRT (TCMB) XML Web site.</Description>
+    <PackageTags>turkishlira lira turkishexchangerate turkishforeigncurrency turkishforeignexchange</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\lira.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.14" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.14" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ExchangeRateTransfer\ExchangeRateTransfer.csproj" />
+  </ItemGroup>
+
+</Project>

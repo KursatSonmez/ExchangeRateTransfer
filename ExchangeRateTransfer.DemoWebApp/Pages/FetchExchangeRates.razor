@@ -1,0 +1,71 @@
+﻿@page "/exchange-rates"
+
+@using DemoWebApp.TransferWrapper.Dtos;
+@using DemoWebApp.TransferWrapper.Services;
+
+@implements IDisposable
+
+@inject IExchangeRateService ExchangeRateService
+
+<h1>Exchange Rates</h1>
+
+<p>This component demonstrates list of the the exchange rates.</p>
+
+@if (exchangeRates == null)
+{
+	<p><em>@(date.DateTime.ToLongDateString()) Loading...</em></p>
+}
+else
+{
+	<input type="date" value="@date.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)" @onchange="DateOnChange" />
+	<br />
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Row</th>
+				<th>Id</th>
+				<th>CurrencyCode</th>
+				<th>BanknoteSelling</th>
+			</tr>
+		</thead>
+		<tbody>
+			@for (var i = 0; i < exchangeRates.Length; i++)
+			{
+				var item = exchangeRates[i];
+
+				<tr style="@(item.CurrencyCode == "USD" || item.CurrencyCode == "EUR" ? "background:orange;" : "")">
+					<td>@(i + 1)</td>
+					<td>@item.Id</td>
+					<td>@item.CurrencyCode</td>
+					<td>@item.BanknoteSelling</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+	private CancellationTokenSource cts = new CancellationTokenSource();
+
+	private ExchangeRateComboBoxDto[]? exchangeRates = null;
+	private DateTimeOffset date;
+
+	protected override async Task OnInitializedAsync()
+	{
+		date = DateTimeOffset.Now;
+		exchangeRates = await ExchangeRateService.GetTodayOrSpecificDate(date, allCurrencies: false, cancellationToken: cts.Token);
+	}
+
+	public void Dispose()
+	{
+		cts.Cancel();
+		cts.Dispose();
+	}
+
+	private async Task DateOnChange(ChangeEventArgs e)
+	{
+		date = DateTimeOffset.Parse(e.Value!.ToString()!);
+
+		exchangeRates = await ExchangeRateService.GetTodayOrSpecificDate(date, cancellationToken: cts.Token);
+	}
+}

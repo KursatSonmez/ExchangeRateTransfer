@@ -1,0 +1,157 @@
+﻿@page "/exchange-rates/create"
+
+@using DemoWebApp.TransferWrapper.Entities;
+@using DemoWebApp.TransferWrapper.Services;
+
+@implements IDisposable
+
+@inject IExchangeRateService ExchangeRateService
+@inject ILiraExchangeRateTransferService LiraExchangeRateService
+
+<h1>Create New Exchange Rates</h1>
+
+<p>This component allow to insert the exchange rates.</p>
+
+@if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+	<h5 style="color:red; font-weight:bold;">@errorMessage</h5>
+}
+
+@if (exchangeRates == null)
+{
+	<p><em>@(date.DateTime.ToLongDateString()) Loading...</em></p>
+}
+else
+{
+	<input type="date" value="@date.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)" @onchange="DateOnChange" />
+	<button class="btn btn-primary" @onclick="Click_InsertAndFetch">Create</button>
+	<br />
+	<h3>(@newRecords) new records added.</h3>
+	<br />
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Row</th>
+				<th>Id</th>
+
+				<th>ExchangeRateDate</th>
+				<th>ReleaseDate</th>
+
+				<th>BulletinNo</th>
+
+				<th>Kod</th>
+				<th>CurrencyCode</th>
+
+				<th>Unit</th>
+
+				<th>Isim</th>
+				<th>CurrencyName</th>
+
+				<th>ForexBuying</th>
+				<th>ForexSelling</th>
+
+				<th>BanknoteBuying</th>
+				<th>BanknoteSelling</th>
+
+				<th>CrossRateUSD</th>
+				<th>CrossRateOther</th>
+
+				<th>CreateDate</th>
+				<th>UpdateDate</th>
+			</tr>
+		</thead>
+		<tbody>
+			@for (var i = 0; i < exchangeRates.Length; i++)
+			{
+				var item = exchangeRates[i];
+
+				<tr style="@(item.CurrencyCode == "USD" || item.CurrencyCode == "EUR" ? "background:orange;" : "")">
+					<td>@(i + 1)</td>
+					<td>@item.Id</td>
+
+					<td>@item.ExchangeRateDate.ToShortDateString()</td>
+					<td>@item.ReleaseDate.ToShortDateString()</td>
+
+					<td>@item.BulletinNo</td>
+
+					<td>@item.Kod</td>
+					<td>@item.CurrencyCode</td>
+
+					<td>@item.Unit</td>
+
+					<td>@item.Isim</td>
+					<td>@item.CurrencyName</td>
+
+					<td>@item.ForexBuying</td>
+					<td>@item.ForexSelling</td>
+
+					<td>@item.BanknoteBuying</td>
+					<td>@item.BanknoteSelling</td>
+
+					<td>@item.CrossRateUSD</td>
+					<td>@item.CrossRateOther</td>
+
+					<td>@item.CreateDate.DateTime.ToLongDateString()   @item.CreateDate.DateTime.ToLongTimeString()</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+	private CancellationTokenSource cts = new CancellationTokenSource();
+
+	private ExchangeRate[]? exchangeRates = null;
+	private DateTimeOffset date;
+	private int? newRecords = null;
+	private string? errorMessage = null;
+
+	protected override async Task OnInitializedAsync()
+	{
+		date = DateTimeOffset.Now;
+
+		exchangeRates = await ExchangeRateService.GetExchangeRatesByDate(date, allCurrencies: true, cts.Token);
+	}
+
+	public void Dispose()
+	{
+		cts.Cancel();
+		cts.Dispose();
+	}
+
+	private async Task DateOnChange(ChangeEventArgs e)
+	{
+		newRecords = null;
+		exchangeRates = null;
+		date = DateTimeOffset.Parse(e.Value!.ToString()!);
+
+		exchangeRates = await ExchangeRateService.GetExchangeRatesByDate(date, allCurrencies: true, cts.Token);
+
+		Thread.Sleep(500);
+	}
+
+	private async Task Click_InsertAndFetch()
+	{
+		newRecords = null;
+		exchangeRates = null;
+
+		await InsertAndFetch();
+
+		Thread.Sleep(500);
+	}
+
+	private async Task InsertAndFetch()
+	{
+		try
+		{
+			newRecords = await LiraExchangeRateService.ReadAndSaveIfNotAsync(date, cts.Token);
+
+			exchangeRates = await ExchangeRateService.GetExchangeRatesByDate(date, allCurrencies: true, cts.Token);
+		}
+		catch (Exception ex)
+		{
+			errorMessage = ex.Message + (ex.InnerException != null ? "\n\nInnerException=" + ex.InnerException.Message : "");
+		}
+	}
+
+}

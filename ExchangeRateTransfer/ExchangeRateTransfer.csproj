@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+    <PackageId>ExchangeRateTransfer</PackageId>
+    <Title>ExchangeRateTransfer</Title>
+    <Version>1.0.0</Version>
+    <Product>ExchangeRateTransfer</Product>
+    <Company>Kursat Sonmez</Company>
+    <Authors>Kursat Sonmez</Authors>
+    <Copyright>Kursat Sonmez</Copyright>
+    <RepositoryUrl>https://github.com/KursatSonmez/ExchangeRateTransfer</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageIcon>lira.png</PackageIcon>
+    <Description>This package is used to collect foreign currency informations for Turkish currency from the CBRT (TCMB) XML Web site.</Description>
+    <PackageTags>turkishlira lira turkishexchangerate turkishforeigncurrency turkishforeignexchange</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Loader\**" />
+    <EmbeddedResource Remove="Loader\**" />
+    <None Remove="Loader\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\lira.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+  </ItemGroup>
+
+</Project>
